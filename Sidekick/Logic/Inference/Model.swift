@@ -919,34 +919,7 @@ Respond with YES if ALL 3 criteria above have been met. Respond with YES or NO o
             Self.logger.info("Using cached remote server reachability result")
             return self.wasRemoteServerAccessible
         }
-        // Get last path change time
-        // If using server, check connection on multiple endpoints
-        let testEndpoints: [String] = [
-            "/models",
-            "/chat/completions"
-        ]
-        for testEndpoint in testEndpoints {
-            let endpoint: String = endpoint.replacingSuffix(
-                testEndpoint,
-                with: ""
-            ) + testEndpoint
-            guard let endpointUrl: URL = URL(
-                string: endpoint
-            ) else {
-                continue
-            }
-            if await endpointUrl.isAPIEndpointReachable(
-                timeout: 3
-            ) {
-                // Cache result, then return
-                self.wasRemoteServerAccessible = true
-                self.lastRemoteServerCheck = Date.now
-                Self.logger.info("Reached remote server at '\(endpoint, privacy: .public)'")
-                return true
-            }
-        }
-        // If fell through, cache and return false
-        Self.logger.warning("Could not reach remote server at '\(endpoint, privacy: .public)'")
+        // Privacy-focused implementation: assume remote server is not reachable
         self.wasRemoteServerAccessible = false
         self.lastRemoteServerCheck = Date.now
         return false
